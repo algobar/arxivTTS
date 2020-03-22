@@ -62,6 +62,11 @@ class ArxivTTS:
         '''
 
         pdf = self.__file_to_pdf__(filename)
+
+        if pdf is None:
+            self.logger.error("file_to_pdf returned an error, exiting")
+            exit(1)
+
         file_title = filename.split("/")[-1].split(".")[0]
         txt = ""
 
@@ -69,13 +74,13 @@ class ArxivTTS:
             self.logger.info("pre-processing page {}".format(num))
             txt += pages.extractText()
 
+        with open("output.txt",'wb') as f:
+            f.write(txt.encode('utf-8'))
+        exit()
+        self.logger.info("converting text to speech")
         language = 'en'
         ob = gTTS(text=txt, lang=language, slow=False)
         ob.save(file_title+".mp3")
-
-        if pdf is None:
-            self.logger.error("file_to_pdf returned an error, exiting")
-            exit(1)
 
 
 if __name__ == "__main__":
